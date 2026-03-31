@@ -1,6 +1,6 @@
 1. Crie um programa que usa duas pilhas A e B para ordenar uma sequência de n números dados pelo usuário. A ideia é organizar a pilha A de modo que nenhum item seja empilhado sobre outro menor (use a pilha B apenas para manobra) e, depois, descarregar e exibir os itens da pilha A.
 
-'''
+```
 #include <stdio.h>
 #include "pilha.h"
 
@@ -25,4 +25,4 @@ int main (void){
 	destroip(&B);
 	return 0;
 }
-'''
+```
