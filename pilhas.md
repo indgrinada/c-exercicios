@@ -122,3 +122,118 @@ int main (void){
 }
 ```
 
+
+3. Inversão de palavras: Usando uma pilha, crie um programa para inverter a ordem das letras nas palavras de uma frase, sem inverter a ordem das palavras na frase. Por exemplo, se for digitada a frase "apenas um teste", o programa deverá produzir a seguinte saída: sanepa mu etset.
+
+```
+#include <stdio.h>
+#include <string.h>
+#include "pilha.h"
+
+int main (void){
+	char s[60];
+	int i, j;
+
+	printf("digite a frase: "); gets(s);
+	Pilha A = pilha(strlen(s));
+	i = j = 0;
+
+	for( ; i < strlen(s); i++){
+		if(s[i] != ' ') empilha(s[i], A);
+		else{
+			 while(!vaziap(A)) s[j++] = desempilha(A);
+			 s[j++] = s[i]; // o mesmo que s[j++] = " "
+		}
+
+	} // neste ponto, empilhamos todos os chars antecessores ao "\0"
+
+	while(!vaziap(A)) s[j++] = desempilha(A);
+	s[j] = '\0';
+
+	puts("saida: ");
+	puts(s);
+	destroip(&A);
+	return 0;
+}
+```
+
+
+4. Balanceamento de parênteses: Usando pilha, crie um programa para verificar se uma expressão composta apenas por chaves, colchetes e parênteses, representada por uma cadeia de caracteres, está ou não balanceada. Por exemplo, as expressões "[{()()}{}]" e "{[([{}])]}" estão balanceadas, mas as expressões "{[(}])" e "{[)()(]}" não estão.
+
+```
+#include <stdio.h>
+#include <string.h>
+#include "pilha.h"
+
+int main (void){
+
+	char s[40], lixo, resultado;
+	printf("digite a expressao: "); gets(s);
+	Pilha A = pilha(strlen(s));
+
+	for(int i=0; i < strlen(s); i++){
+		switch(s[i]){
+			case ')': if(!vaziap(A) && topo(A)=='(') lixo = desempilha(A); else empilha ('!', A); break;
+			case ']': if(!vaziap(A) && topo(A)=='[') lixo = desempilha(A); else empilha ('!', A); break;
+			case '}': if(!vaziap(A) && topo(A)=='{') lixo = desempilha(A); else empilha ('!', A); break;
+			case '(': 
+			case '[': 
+			case '{': empilha(s[i], A); break;
+			default: ; break; // nao foi proposital, mas isso faz o programa ler expressoes como "(a + b) * [c]" considerando apenas o balanceamento de (), [] e/ou {} kk
+		}
+	}
+
+	if(vaziap(A)) puts("balanceada"); else puts("desbalanceada");
+	return 0;
+}
+```
+
+
+5. Pilha de strings: considerando o código abaixo, qual será a saída, se o usuário digitar as strings "um", "dois" e "tres"? Por quê?
+
+```
+#include <stdio.h>
+#include <string.h>
+#include "pilha.h" // pilha de char*
+
+int main(void) {
+	Pilha A = pilha(5);
+	char s[11];
+	
+	for(int i=1; i<=3; i++) {
+		printf("? "); gets(s);
+		empilha(s, A);
+	}
+	
+	while(!vaziap(A)) puts(desempilha(A));
+	return 0;
+}
+```
+Resposta: A saída será "tres tres tres". Nesse caso, foi necessário modificar o arquivo "pilha.h" para que a struct pilha armazenasse char* e não mais int como itens. Sendo assim, como o tipo char* é ponteiro, sempre que usamos get(s) sobrescrevemos um mesmo endereço de memória, o qual será empilhado como item em A.
+
+
+6. Pilha de strings: Use _strdup(s), declarada em string.h, para corrigir o programa do exercício anterior. Essa função duplica a cadeia s numa área de memória, alocada pela função malloc(), e devolve o endereço dessa área. Depois de usada, essa cópia pode ser destruída com a função free().
+
+```
+#include <stdio.h>
+#include <string.h>
+#include "pilha.h" // pilha de char*
+
+int main(void) {
+	Pilha A = pilha(5);
+	char s[11];
+	
+	for(int i=1; i<=3; i++) {
+		printf("? "); gets(s);
+		empilha(strdup(s), A);
+	}
+	
+	while(!vaziap(A)){ 
+		puts(topo(A));
+		free(desempilha(A));
+	}
+	return 0;
+}
+```
+
+
